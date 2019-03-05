@@ -1,1 +1,1 @@
-# als-oracle-tempalate
+# als-oracle-template
