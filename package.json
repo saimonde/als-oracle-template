@@ -27,7 +27,7 @@
         "test": "tape 'tests/**/*.js'",
         "cover": "istanbul cover tape -- 'tests/**/*.js'",
         "lint": "eslint .",
-        "regenerate": "yo swaggerize:test --framework hapi --apiPath './config/swagger.json'"
+        "regenerate": "yo swaggerize:test --framework hapi --apiPath './src/interface/swagger.json'"
     },
     "generator-swaggerize": {
         "version": "4.1.0"
