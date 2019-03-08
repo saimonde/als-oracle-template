@@ -1,6 +1,10 @@
 'use strict';
-
+require('dotenv').config();
 const Boom = require('boom');
+// const env = require('../../../../config/knexfile');
+// const db = require('knex')(env.development);
+const participant = require('../../../../src/models/participants');
+const Joi=require('joi');
 
 /**
  * Operations on /participants/{Type}/{ID}
@@ -13,8 +17,36 @@ module.exports = {
      * produces: application/json
      * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
      */
-    get: function ParticipantsByTypeAndIDGet(request, h) {
-        return Boom.notImplemented();
+    get:  function ParticipantsByTypeAndIDGet(request, h) {
+        const TYPE_REGEX = new RegExp(process.env.TYPE_REGEX,"i");
+        const IDENTIFIER_REGEX = new RegExp(process.env.IDENTIFIER_REGEX,"i");
+       
+        const identifierSchema=Joi.object().keys({
+            Type:Joi.string().regex(TYPE_REGEX).required(),
+            ID:Joi.string().regex(IDENTIFIER_REGEX).length(14).required()
+        });
+
+        const type = request.params.Type;
+        const identifier = request.params.ID;
+        var response=null;
+
+        Joi.validate(
+            {
+                Type:type,ID:identifier
+            },identifierSchema, (err,value)=>{
+                if(err){
+                    //console.log(err);
+                    response= err.message;
+                }else{
+                    var accountNumber=value.ID;
+                    var bankCode=accountNumber.substring(0,3);
+                    response=   participant.getParticipant(bankCode);
+                        
+                }
+            }
+        );
+
+         return  response;
     },
     /**
      * summary: Return participant information
